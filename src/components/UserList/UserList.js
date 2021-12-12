@@ -26,18 +26,27 @@ const UserList = ({ users, isLoading }) => {
     else {
       setSelectedUsers(users.filter(user => selectedCountries.includes(user.location.country)));
     }
-  });
+  },[selectedCountries,users]);
+
+  const handleSelectedCountries = (country) => {
+    if (selectedCountries.indexOf(country) == -1) {
+      setSelectedCountries([country, ...selectedCountries]);
+    }
+    else {
+      setSelectedCountries(selectedCountries.filter(selectedCountry => selectedCountry !== country));
+    }
+  }
 
   return (
     <S.UserList>
       <S.Filters>
-        <CheckBox value="BR" label="Brazil" />
-        <CheckBox value="AU" label="Australia" />
-        <CheckBox value="CA" label="Canada" />
-        <CheckBox value="DE" label="Germany" />
+        <CheckBox value="Brazil" label="Brazil" onChange={handleSelectedCountries} />
+        <CheckBox value="Australia" label="Australia" onChange={handleSelectedCountries} />
+        <CheckBox value="Canada" label="Canada" onChange={handleSelectedCountries} />
+        <CheckBox value="Germany" label="Germany" onChange={handleSelectedCountries} />
       </S.Filters>
       <S.List>
-        {users.map((user, index) => {
+        {selectedUsers.map((user, index) => {
           return (
             <S.User
               key={index}
