@@ -8,6 +8,8 @@ import * as S from "./style";
 
 const UserList = ({ users, isLoading }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
+  const [selectedCountries,setSelectedCountries]= useState([]);
+  const [selectedUsers, setSelectedUsers]= useState(users);
 
   const handleMouseEnter = (index) => {
     setHoveredUserId(index);
@@ -16,6 +18,15 @@ const UserList = ({ users, isLoading }) => {
   const handleMouseLeave = () => {
     setHoveredUserId();
   };
+
+  useEffect(() => {
+    if(users && selectedCountries && selectedCountries.length == 0) {
+      setSelectedUsers(users);
+    }   
+    else {
+      setSelectedUsers(users.filter(user => selectedCountries.includes(user.location.country)));
+    }
+  });
 
   return (
     <S.UserList>
