@@ -46,13 +46,13 @@ const UserList = ({ users, isLoading, favorites, setFavorits }) => {
         setFavorits(favorites.filter( favorite => favorite != selectedUsers[index]));
       }
       else {
-        setFavorits([selectedUsers[index]], ...favorites);
+        setFavorits([...favorites, selectedUsers[index]]);
       } 
     }
   }
 
-  const checkConditionToVisible = (index) => {
-    return index === hoveredUserId || (favorites && favorites.includes(users[index]));
+  const checkConditionToVisible = (index, user) => {
+    return index === hoveredUserId || (favorites && favorites.includes(user));
   }
 
   return (
@@ -85,7 +85,7 @@ const UserList = ({ users, isLoading, favorites, setFavorits }) => {
                   {user?.location.city} {user?.location.country}
                 </Text>
               </S.UserInfo>
-              <S.IconButtonWrapper isVisible={checkConditionToVisible(index)} onClick={()=>{handleClickOnHeart(index)}} >
+              <S.IconButtonWrapper isVisible={checkConditionToVisible(index, user)} onClick={()=>{handleClickOnHeart(index)}} >
                 <IconButton>
                   <FavoriteIcon color="error" />
                 </IconButton>
