@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import * as S from "./style";
 
-const UserList = ({ users, isLoading }) => {
+const UserList = ({ users, isLoading, favorites, setFavorits }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
   const [selectedCountries,setSelectedCountries]= useState([]);
   const [selectedUsers, setSelectedUsers]= useState(users);
@@ -28,23 +28,41 @@ const UserList = ({ users, isLoading }) => {
     }
   },[selectedCountries,users]);
 
-  const handleSelectedCountries = (country) => {
-    if (selectedCountries.indexOf(country) == -1) {
+  const handleSelectCountries = (country) => {
+    if (!selectedCountries.includes(country)) {
       setSelectedCountries([country, ...selectedCountries]);
     }
     else {
-      setSelectedCountries(selectedCountries.filter(selectedCountry => selectedCountry !== country));
+      setSelectedCountries(selectedCountries.filter(selectedCountry => selectedCountry != country));
     }
+  }
+
+  const handleClickOnHeart = (index) => {
+    if (!favorites) {
+      setFavorits([selectedUsers[index]]);
+    }
+    else {
+      if (favorites.includes(selectedUsers[index])) {
+        setFavorits(favorites.filter( favorite => favorite != selectedUsers[index]));
+      }
+      else {
+        setFavorits([selectedUsers[index]], ...favorites);
+      } 
+    }
+  }
+
+  const checkConditionToVisible = (index) => {
+    return index === hoveredUserId || (favorites && favorites.includes(users[index]));
   }
 
   return (
     <S.UserList>
       <S.Filters>
-        <CheckBox value="Brazil" label="Brazil" onChange={handleSelectedCountries} />
-        <CheckBox value="Australia" label="Australia" onChange={handleSelectedCountries} />
-        <CheckBox value="Canada" label="Canada" onChange={handleSelectedCountries} />
-        <CheckBox value="Germany" label="Germany" onChange={handleSelectedCountries} />
-        <CheckBox value="Spain" label="Spain" onChange={handleSelectedCountries} />
+        <CheckBox value="Brazil" label="Brazil" onChange={handleSelectCountries} />
+        <CheckBox value="Australia" label="Australia" onChange={handleSelectCountries} />
+        <CheckBox value="Canada" label="Canada" onChange={handleSelectCountries} />
+        <CheckBox value="Germany" label="Germany" onChange={handleSelectCountries} />
+        <CheckBox value="Spain" label="Spain" onChange={handleSelectCountries} />
       </S.Filters>
       <S.List>
         {selectedUsers.map((user, index) => {
@@ -67,7 +85,7 @@ const UserList = ({ users, isLoading }) => {
                   {user?.location.city} {user?.location.country}
                 </Text>
               </S.UserInfo>
-              <S.IconButtonWrapper isVisible={index === hoveredUserId}>
+              <S.IconButtonWrapper isVisible={checkConditionToVisible(index)} onClick={()=>{handleClickOnHeart(index)}} >
                 <IconButton>
                   <FavoriteIcon color="error" />
                 </IconButton>
